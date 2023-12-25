@@ -1,0 +1,64 @@
+.data
+	Message: .asciiz "Nhap vao 1 so nguyen duong N: "
+	Message1: .asciiz "So nho hon N chia het cho 5 hoac 7 la:\n"
+	Message2: .asciiz "Khong co so nao nho hon N chia het cho 5 hoac 7!"
+	Eror: .asciiz "So nhap vao phai lon hon 0!\n"
+	Space: .asciiz " "
+.text
+main:
+	li $v0, 4
+	la $a0, Message
+	syscall
+	li $v0, 5
+	syscall
+	move $s0, $v0
+	bltz $s0, PrintEror
+	li $s1, 1
+	li $t1, 5
+	li $t2, 7
+	blt  $s0, $t1, PrintNo
+	li $v0, 4
+	la $a0, Message1
+	syscall
+	j check_5
+exit:
+	li $v0, 10
+	syscall
+check_5:
+	beq $s1, $s0, exit
+	div $s1, $t1
+	mfhi $t3
+	beqz $t3, PrintNumber_5
+check_7:
+ 	div $s1, $t2
+ 	mfhi $t3
+ 	beqz $t3, PrintNumber_7
+Continue:
+	addi $s1, $s1, 1
+	j check_5
+PrintNumber_5:
+	li $v0, 1
+	addi $a0, $s1, 0
+	syscall
+	li $v0, 4
+	la $a0, Space
+	syscall
+	j check_7
+PrintNumber_7:
+	li $v0, 1
+	addi $a0, $s1, 0
+	syscall
+	li $v0, 4
+	la $a0, Space
+	syscall
+	j Continue
+PrintNo:
+	li $v0, 4
+	la $a0, Message2
+	syscall
+	j exit
+PrintEror:
+	li $v0, 4
+	la $a0, Eror
+	syscall
+	j main

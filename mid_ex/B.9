@@ -1,0 +1,89 @@
+.data
+	A: .space 100
+	Message: .asciiz "Nhap so phan tu mang: "
+	Message1: .asciiz "Nhap so: "
+	Message2: .asciiz "Phan tu co so lan xuat hien it nhat trong mang la: "
+	Eror: .asciiz "So phan tu mang phai lon hon bang 1!\n"
+.text
+main:
+	li $v0, 4
+	la $a0, Message
+	syscall
+	li $v0, 5
+	syscall
+	move $s0, $v0
+	blt $s0, 1, PrintEror
+	la $a1, A
+	li $a2, 1
+	addi $fp, $sp, 0
+	j input_array
+exit:
+	li $v0, 10
+	syscall
+input_array:
+	beq $t2, $s0, FindMinFreq
+	add $t0, $a1, $t1
+	li $v0, 4
+	la $a0, Message1
+	syscall
+	li $v0, 5
+	syscall
+	move $s1, $v0
+	sw $s1, 0($t0)
+	jal Check
+	sw $s1, 0($sp)
+	sw $a2, 4($sp)
+	addi $a3, $a3, 1
+	addi $sp, $sp, 8
+continue:
+	addi $t2, $t2, 1
+	mul $t1, $t2, 4
+	j input_array
+Check:
+	li $t3, 0
+	mul $t4, $a3, 8
+	sub $t5, $sp, $t4
+loop:
+	beq $t3, $a3, Return
+	lw $s2, 0($t5)
+	beq $s2, $s1, Update
+	addi $t3, $t3, 1
+	addi $t5, $t5, 8
+	j loop
+Update:
+	lw $s3, 4($t5)
+	addi $s3, $s3, 1
+	sw $s3, 4($t5)
+	j continue
+Return:
+	jr $ra
+FindMinFreq:
+	addi $sp, $fp, 0
+	li $t0, 0
+	lw $t1, 4($sp)
+MinFreq:
+	beq $t0, $a3, PrintResult
+	lw $t2, 0($sp)
+	lw $t3, 4($sp)
+	blt $t3, $t1, UpdateMinFreq
+ContinueFind:
+	addi $sp, $sp, 8
+	addi $t0, $t0, 1
+	j MinFreq
+UpdateMinFreq:
+	addi $s1, $t2, 0
+	addi $t1, $t3, 0
+	j ContinueFind
+PrintResult:
+	li $v0, 4
+	la $a0, Message2
+	syscall
+	li $v0, 1
+	addi $a0, $s1, 0
+	syscall
+	j exit
+PrintEror:
+	li $v0, 4
+	la $a0, Eror
+	syscall
+	j main

@@ -1,0 +1,51 @@
+.data
+	Message: .asciiz "Nhap vao 1 so nguyen duong N: "
+	Message1: .asciiz "Chu so lon nhat cua N la: "
+	Eror: .asciiz "So nhap vao phai lon hon 0!\n"
+	Eror1: .asciiz "So nhap vao phai coo it nhat 2 chu so!\n"
+.text
+main:
+	li $v0, 4
+	la $a0, Message
+	syscall
+	li $v0, 5
+	syscall
+	move $s0, $v0
+	bltz $s0, PrintEror
+	li $t0, 10
+	blt $s0, $t0, PrintEror2
+	li $s1, 0
+	j check
+exit:
+	li $v0, 10
+	syscall
+check:
+	beqz $s0, PrintResult
+	div $s0, $t0
+	mfhi $t1
+	mflo $t2
+	addi $s0, $t2, 0
+	bgt $t1, $s1, Update
+	j check
+Update:
+	addi $s1, $t1, 0
+	j check
+PrintEror:
+	li $v0, 4
+	la $a0, Eror
+	syscall
+	j main
+PrintEror2:
+	li $v0, 4
+	la $a0, Eror1
+	syscall
+	j main
+PrintResult:
+	li $v0, 4
+	la $a0, Message1
+	syscall
+	la $v0, 1
+	addi $a0, $s1, 0
+	syscall
+	j exit
+	

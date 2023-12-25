@@ -1,0 +1,14 @@
+.text
+	li	$s0, 1
+	li	$t0, 1
+	li	$s1, 3
+	li	$s2, 32
+LOOP:
+	sllv	$t1, $t0, $s0
+	beq	$t1, $s2, MUL
+	bgt 	$t1, $s2, EXIT
+	addi	$s0, $s0, 1
+	j	LOOP
+MUL:
+	sllv	$s3, $s1, $s0
+EXIT:

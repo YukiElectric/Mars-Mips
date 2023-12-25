@@ -1,0 +1,32 @@
+.data
+	arr: .word -5, -15, 6, 4, 5, -9
+.text
+	addi	$s1, $zero, 0	#khoitao i
+	la	$s2, arr
+	addi	$s3, $zero, 6	#khoitao n
+	addi	$s4, $zero, 1	#khoitao step
+	addi	$s5, $zero, 0	#Max
+loop:	slt 	$t2, $s1, $s3	#i<n
+	beq	$t2, $zero, endloop
+	add	$t1, $s1, $s1
+	add	$t1, $t1, $t1	#t1 = 4*i dia chi address them vao
+	add	$t1, $t1, $s2
+	lw	$t0, 0($t1)
+	start_0:	#doi A[i] sang duong
+		addi 	$t4, $t0, 0
+		slt	$t3, $t4, $zero
+		beq	$t3, $zero start_1
+		sub	$t4, $zero, $t4
+	start_1:	#doi Max sang duong
+		addi 	$t5, $s5, 0
+		slt	$t3, $t5, $zero
+		beq	$t3, $zero start_2
+		sub	$t5, $zero, $t5
+	start_2:
+		slt	$t3, $t4, $t5
+		bne	$t3, $zero, endif
+		addi	$s5, $t0, 0
+	endif:
+	add 	$s1, $s1, $s4	#i = i + step
+	j	loop
+endloop:

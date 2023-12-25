@@ -1,0 +1,20 @@
+.data
+Message_1:	.asciiz "Nhap so thu nhat "
+Message_2:	.asciiz	"Nhap so thu hai "
+Message_3:	.asciiz	"Tong cua hai so la "
+.text
+	li 	$v0, 51
+	la	$a0, Message_1
+	syscall
+	move	$s0, $a0
+	
+	li	$v0,51
+	la	$a0, Message_2
+	syscall
+	move	$s1, $a0
+	
+	add	$s2, $s0, $s1
+	li	$v0, 56
+	la	$a0, Message_3
+	la	$a1, 0($s2)
+	syscall

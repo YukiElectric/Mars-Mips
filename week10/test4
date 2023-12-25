@@ -1,0 +1,28 @@
+.eqv MONITOR_SCREEN 0x10010000
+.eqv RED            0x00FF0000
+.eqv YELLOW         0x00FFFF00
+.text
+li $k0, MONITOR_SCREEN
+addi $k1, $k0, 256
+addi $a0, $zero, 0
+LOOP:
+beq $k0, $k1, END
+beq $a0, 4, REVERSE
+li $t0, YELLOW
+sw  $t0, 0($k0)
+li $t0, RED
+sw  $t0, 4($k0)
+addi $a0, $a0, 1
+addi $k0, $k0, 8
+j LOOP
+REVERSE:
+beq $k0, $k1, END
+beqz $a0, LOOP
+li $t0, RED
+sw  $t0, 0($k0)
+li $t0, YELLOW
+sw  $t0, 4($k0)
+addi $a0, $a0, -1    
+addi $k0, $k0, 8
+j REVERSE
+END:

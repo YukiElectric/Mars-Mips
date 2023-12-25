@@ -1,0 +1,48 @@
+.data
+	String: .space 256
+	Message: .asciiz "Nhap vao xau ky tu: "
+	Message1: .asciiz "Ket qua cua xau la: "
+.text
+main:
+	li $v0, 4
+	la $a0, Message
+	syscall
+	li $v0, 8
+	la $a0, String
+	li $a1, 256
+	syscall
+	la $a1, String      #65-90:Upper 97-122 Lower 
+	j UpperAndLower
+exit:
+	li $v0, 10
+	syscall
+UpperAndLower:
+	li $s0, 32   #space
+	li $s1, 10   #\n
+Reset:
+	lb $v1, 0($a1)
+Check:
+	beq $v1, $s1, PrintResult
+	bge $v1, 97, Upper
+Continue:
+	li $t0, 1
+	addi $a1, $a1, 1
+	lb $v1, 0($a1)
+	beq $v1, $s0, RisePointer
+	j Check
+RisePointer:
+	addi $a1, $a1, 1
+	j Reset
+Upper:
+	bgt $v1, 122, Continue
+	addi $v1, $v1, -32
+	sb $v1, 0($a1)
+	j Continue
+PrintResult:
+	li $v0, 4
+	la $a0, Message1
+	syscall
+	li $v0, 4
+	la $a0, String
+	syscall
+	j exit

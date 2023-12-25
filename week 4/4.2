@@ -1,0 +1,9 @@
+.text
+	li	$s0, 0x12345678
+	#srl	$t0, $s0, 24
+	#sll	$t1, $s0, 8
+	
+	#andi	$t0, $s0, 0xff000000
+	#andi	$t1, $s0, 0xffffff00
+	#ori	$t2, $s0, 0x000000ff
+	and	$s0, $s0, $zero

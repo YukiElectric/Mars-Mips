@@ -1,0 +1,59 @@
+.data
+	String1: .space 256
+	String2: .space 256
+	Message: .asciiz "Nhap vao xau ky tu 1: "
+	Message1: .asciiz "Nhap vao xau ky tu 2: "
+	Message2: .asciiz "2 xau giong nhau"
+	Message3: .asciiz "2 xau khong giong nhau"
+.text
+main:
+	li $v0, 4
+	la $a0, Message
+	syscall
+	li $v0, 8
+	la $a0, String1
+	li $a1, 256
+	syscall
+	li $v0, 4
+	la $a0, Message1
+	syscall
+	li $v0, 8
+	la $a0, String2
+	li $a1, 256
+	syscall
+	la $a0, String1
+	la $a1, String2
+	j Compare
+exit:
+	li $v0, 10
+	syscall
+Compare:
+	li $s1, 10   #\n
+Check:
+	lb $v0, 0($a0)
+	lb $v1, 0($a1)
+	beq $v0, $s1, Update
+	beq $v1, $s1, PrintNotSame
+	sub $t0, $v0, $v1
+	abs $t0, $t0
+	beqz $t0, skip
+	beq $t0, 32, skip
+	j PrintNotSame
+skip:
+	addi $a0, $a0, 1
+	addi $a1, $a1, 1
+	j Check
+Update:
+	lb $t1, 4($a1)
+	bnez $t1, PrintNotSame
+	j PrintResult
+PrintResult:
+	li $v0, 4
+	la $a0, Message2
+	syscall
+	j exit
+PrintNotSame:
+	li $v0, 4
+	la $a0, Message3
+	syscall
+	j exit

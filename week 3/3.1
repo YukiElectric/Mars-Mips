@@ -1,0 +1,29 @@
+.data
+	m: .word 5
+	n: .word 6
+.text
+	addi	$s1, $zero, 4 #khaibao i
+	addi	$s2, $zero, 6 #khaibao j
+	addi	$t1, $zero, 10 #khaibao x
+	addi	$t2, $zero, 10 #khaibao y
+	addi	$t3, $zero, 10 #khaibao z
+	la	$t4, m
+	lw	$s4, 0($t4)	#khaibao m
+	la	$t5, n
+	lw	$s5, 0($t5) 	#khaibao n
+start:
+	#slt	$t0, $s1, $s2	#i<j	a)
+	#sge  	$t0, $s2, $s1	#i>=j	b)
+	#add	$s3, $s1, $s2 	#khaibao i+j	c+d)
+	#sge	$t0, $s3, $zero	 #i+j>=0	c)
+	#add	$s6, $s4, $s5	#m+n		d)
+	#sgt	$t0, $s3, $s6	#i+j>m+n	d)
+	 
+	slt	$t0, $s2, $s1	#j<i
+	bne	$t0, $zero, else
+	addi	$t1, $t1, 1	#x=x+1
+	addi	$t3, $zero, 1	#z=1
+	j 	endif
+else:	addi	$t2, $t2, -1	#y=y-1
+	add	$t3, $t3, $t3	#z=z*2
+endif:

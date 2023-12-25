@@ -1,0 +1,19 @@
+.text
+	li	$s1, 15
+	
+	slt	$t0, $s1, $zero		#a)
+	beqz 	$t0, ABS
+	sub	$s1, $zero, $s1
+ABS:
+	add	$s0, $s1, $zero
+	
+
+	add	$s0, $s1, $zero		#b)
+	
+	sub	$t0, $zero, $s1		#c)
+	li	$t1, 1
+	sub	$s0, $t0, $t1
+	
+	sle 	$t0, $s1, $s2		#d)
+	bnez	$t0, label
+label:

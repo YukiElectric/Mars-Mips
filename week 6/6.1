@@ -1,0 +1,76 @@
+.data
+A: 	.word
+Message1:	.asciiz	"Enter number of array: "
+Message2: 	.asciiz	"Enter number: "
+Message3:	.asciiz	"Length of max array is: "
+Message4:	.asciiz	"Sum max is: "
+Newline:	.asciiz	"\n"
+.text
+input_number:
+	li $v0,4
+	la $a0, Message1
+	syscall
+	li $v0,5
+	syscall
+	move $a1, $v0
+	subi $a1, $a1, 1
+	addi $s0, $s0, 0
+	la $a0, A
+	addi $s0, $a0, 0
+input_array:
+	bgt $t0, $a1, end_input
+	li $v0,4
+	la $a0, Message2
+	syscall
+	li $v0,5
+	syscall
+	move $t1, $v0
+	sw $t1, 0($s0)
+	addi $s0, $s0, 4
+	addi $t0, $t0, 1
+	j input_array
+end_input:
+main: 	la $a0,A
+ 	j mspfx
+ 	nop
+continue:
+	addi $s0, $v0, 0
+	addi $s1, $v1, 0
+	li $v0,4
+	la $a0, Message3
+	syscall
+	li $v0,1
+	la $a0, 0($s0)
+	syscall
+	li $v0,4
+	la $a0, Newline
+	syscall
+	li $v0,4
+	la $a0, Message4
+	syscall
+	li $v0,1
+	la $a0, 0($s1)
+	syscall
+lock: 	li $v0, 10
+	syscall
+end_of_main:
+
+mspfx: 	addi $v0,$zero,0	#max_length = 0
+ 	addi $v1,$zero,0	#max_sum = 0
+ 	addi $t0,$zero,0	# i = 0
+ 	addi $t1,$zero,0	#sum = 0
+loop: 	add $t2,$t0,$t0		# 2*i
+ 	add $t2,$t2,$t2		# 4*i
+	add $t3,$t2,$a0		# $t3 = (address of A) + i
+	lw $t4,0($t3)		# $t4 = A[i]
+	add $t1,$t1,$t4		# sum += A[i]
+	slt $t5,$v1,$t1		# if max_sum < sum 
+	bne $t5,$zero,mdfy	# j mdfy
+j 	test
+mdfy: 	addi $v0,$t0,1		# max_length = i+1
+	addi $v1,$t1,0		# max_sum = max
+test: 	addi $t0,$t0,1		# i++
+	slt $t5,$t0,$a1		# if i<n
+	bne $t5,$zero,loop
+done: 	j continue
+mspfx_end:

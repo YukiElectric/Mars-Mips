@@ -1,0 +1,54 @@
+# Procedure to find the largest, smallest and their positions in a list of 8 elements
+# Input: $s0-$s7 - 8 elements
+# Output: $s8 - smallest element, $s9 - position of smallest element,
+#         $s10 - largest element, $s11 - position of largest element
+#         Stack - used to save and restore registers
+
+find_largest_smallest:
+    addi $sp, $sp, -32      # Make space on stack for 8 variables
+    sw $s0, 0($sp)          # Save $s0 on stack
+    sw $s1, 4($sp)          # Save $s1 on stack
+    sw $s2, 8($sp)          # Save $s2 on stack
+    sw $s3, 12($sp)         # Save $s3 on stack
+    sw $s4, 16($sp)         # Save $s4 on stack
+    sw $s5, 20($sp)         # Save $s5 on stack
+    sw $s6, 24($sp)         # Save $s6 on stack
+    sw $s7, 28($sp)         # Save $s7 on stack
+    
+    move $s8, $s0           # Initialize smallest element to first element
+    li $s9, 0               # Initialize smallest position to 0
+    move $s10, $s0          # Initialize largest element to first element
+    li $s11, 0              # Initialize largest position to 0
+
+    # Find smallest and largest elements
+    li $t0, 1               # Counter for loop
+    loop:
+        blt $t0, 8, check    # Branch to check element if counter < 8
+        b done              # Branch to done if counter >= 8
+    check:
+        add $t1, $s0, $t0    # Address of current element
+        lw $t2, 0($t1)       # Load current element into $t2
+        blt $t2, $s8, update_small  # Branch to update_small if current element < smallest element
+        bgt $t2, $s10, update_large # Branch to update_large if current element > largest element
+        addi $t0, $t0, 1    # Increment counter
+        j loop              # Jump to loop
+    update_small:
+        move $s8, $t2        # Update smallest element
+        move $s9, $t0        # Update position of smallest element
+        addi $t0, $t0, 1    # Increment counter
+        j loop              # Jump to loop
+    update_large:
+        move $s10, $t2       # Update largest element
+        move $s11, $t0       # Update position of largest element
+        addi $t0, $t0, 1    # Increment counter
+        j loop              # Jump to loop
+    done:
+        lw $s7, 28($sp)      # Restore $s7 from stack
+        lw $s6, 24($sp)      # Restore $s6 from stack
+        lw $s5, 20($sp)      # Restore $s5 from stack
+        lw $s4, 16($sp)
+        lw $s3, 12($sp)
+        lw $s2, 8($sp)
+        lw $s1, 4($sp)
+        lw $s0, 0($sp)
+        

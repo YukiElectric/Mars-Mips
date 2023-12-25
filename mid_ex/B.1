@@ -1,0 +1,78 @@
+.data
+	A: .space 100
+	Message: .asciiz "Nhap so phan tu mang: "
+	Message1: .asciiz "Nhap so: "
+	Message2: .asciiz "Nhap M: "
+	Message3: .asciiz "Nhap N: "
+	Message4: .asciiz "Cac so nam trong khoang (M,N) la:\n"
+	Space: .asciiz " "
+	Eror: .asciiz "N phai lon hon N!\n"
+.text
+main:
+	li $v0, 4
+	la $a0, Message
+	syscall
+	li $v0, 5
+	syscall
+	move $s0, $v0
+	la $a1, A
+	j input_array
+exit:
+	li $v0, 10
+	syscall
+input_array:
+	beq $t2, $s0, input_M_N 
+	add $t0, $a1, $t1
+	li $v0, 4
+	la $a0, Message1
+	syscall
+	li $v0, 5
+	syscall
+	move $s1, $v0
+	sw $s1, 0($t0)
+	addi $t2, $t2, 1
+	mul $t1, $t2, 4
+	j input_array
+input_M_N:
+	li $v0, 4
+	la $a0, Message2
+	syscall
+	li $v0, 5
+	syscall
+	move $s1, $v0
+	li $v0, 4
+	la $a0, Message3
+	syscall
+	li $v0, 5
+	syscall
+	move $s2, $v0
+	bge $s1, $s2, PrintEror
+	li $v0, 4
+	la $a0, Message4
+	syscall
+	li $t1, 0
+loop:
+	beq $t1, $s0, exit
+	lw $t0, 0($a1)
+	bgt $t0, $s1, check
+continue:
+	addi $t1, $t1, 1
+	addi $a1 $a1, 4
+	j loop
+check:
+	blt $t0, $s2, PrintNumber
+	j continue
+PrintNumber:
+	li $v0, 1
+	addi $a0, $t0, 0
+	syscall
+	li $v0, 4
+	la $a0, Space
+	syscall
+	j continue
+PrintEror:
+	li $v0, 4
+	la $a0, Eror
+	syscall
+	j input_M_N
+

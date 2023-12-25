@@ -1,0 +1,19 @@
+.data
+x:	.space 32
+y:	.asciiz	"Hello"
+.text
+strcpy:
+	la	$a1, y			#gan dia chi string y cho $a1
+	la 	$a0, x			#gan dia chi string x cho $a0
+	add	$s0, $zero, $zero	#khoi tao i = 0
+L1:
+	add	$t1, $s0, $a1		#$t1 = y[i]
+	lb	$t2, 0($t1)		#$t2 = $t1 = y[i]
+	add	$t3, $s0, $a0		#$t3 = x[i]
+	sb	$t2, 0($t3)		#$t3 = $t2 (x[i] = y[i])
+	beq	$t2, $zero, end_of_strcpy	#if y[i] = '\0' end
+	nop
+	addi	$s0, $s0, 1		#i += 1
+	j	L1
+	nop
+end_of_strcpy:

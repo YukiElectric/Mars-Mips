@@ -1,0 +1,53 @@
+.data
+	String: .space 256
+	Message: .asciiz "Nhap vao xau ky tu: "
+	Message1: .asciiz "Tu co do dai dai nhat trong xau la: "
+.text
+main:
+	li $v0, 4
+	la $a0, Message
+	syscall
+	li $v0, 8
+	la $a0, String
+	li $a1, 256
+	syscall
+	la $a1, String
+	j LongestString
+exit:
+	li $v0, 10
+	syscall
+LongestString:
+	li $s0, 32   #space
+	li $s1, 10   #\n
+	li $s2, 0    #Start String
+	li $s3, 0    #End String
+	li $v0, 0    #count
+Reset:
+	addi $t2, $a1, 0
+Check:
+	lb $v1, 0($a1)
+	beqz $v1, PrintResult
+	beq $v1, $s0, RisePointer
+	beq $v1, $s1, RisePointer
+	addi $a1, $a1, 1
+	j Check
+RisePointer:
+	sub $t3, $a1, $t2
+	ble $t3, $v0, Skip
+	addi $v0, $t3, 0
+	addi $s2, $t2, 0
+	addi $s3, $a1, 0
+Skip:
+	addi $a1, $a1, 1
+	j Reset
+PrintResult:
+	li $v0, 4
+	la $a0, Message1
+	syscall
+Print:
+	beq $s2, $s3, exit
+	li $v0, 11
+	lb $a0, 0($s2)
+	syscall
+	addi $s2, $s2, 1
+	j Print

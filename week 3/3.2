@@ -1,0 +1,22 @@
+.data
+	array: .word 3, 5, 0, 7,
+.text
+	addi	$s5, $zero, 0	#khoitao sum
+	addi	$s1, $zero, 0	#khoitao i
+	addi	$s3, $zero, 4	#khoitao n
+	addi	$s4, $zero, 1	#khoitao step
+	la	$s2, array	#khoitao chuoi
+loop:	slt 	$t2, $s1, $s3	#i<n	a)
+	#sle 	$t2, $s1, $s3	#i<=n	b)
+	beq	$t2, $zero, endloop	#a+b+c)
+	add	$t1, $s1, $s1
+	add	$t1, $t1, $t1	#t1 = 4*i dia chi address them vao
+	add	$t1, $t1, $s2
+	lw	$t0, 0($t1)
+	beq 	$t0, $zero endloop	#A[i]==0	d)
+	add	$s5, $s5, $t0	#cap nhat sum
+	#sge	$t3, $s5, $zero		#c)
+	#bne	$t3, $zero, endloop 	#c)
+	add 	$s1, $s1, $s4	#i = i + step
+	j	loop
+endloop:
